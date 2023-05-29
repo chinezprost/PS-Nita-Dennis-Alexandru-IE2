@@ -135,7 +135,6 @@ MC_fake = function(m, n, p, q) {
       if (runif(1, 0, 1) < q) {
         fake_users_count = fake_users_count - 1
       }
-      fake_users_count = fake_users_count - 1
       i = i - 1;
     }
     # Se incrementează days pentru a ține evidența numărului de zile trecute.
@@ -157,7 +156,6 @@ MC_fake_days = function(m, n, p, q, d) {
       if (runif(1, 0, 1) < q) {
         fake_users_count = fake_users_count - 1
       }
-      fake_users_count = fake_users_count - 1
       i = i - 1;
     }
     days = days + 1
