@@ -76,7 +76,7 @@ cat("Estimated integral is:", MC_integral, "\n")
 cat("Absolute error is:", absolute_err, "\n")
 cat("Relative error is:", relative_err, "\n")
 
-#III.c
+# Exercitiul III.c)
 MC_integration = function(N, a, b) {
   summation = 0
   for (iter in 1:N) {
@@ -93,7 +93,7 @@ cat("Estimated integral is:", MC_integral, "\n")
 cat("Absolute error is:", absolute_err, "\n")
 cat("Relative error is:", relative_err, "\n")
 
-#IV
+# Exercitiul IV. a)
 MC_fake = function(m, n, p, q) {
   fake_users_count = m
   days = 0
@@ -118,7 +118,7 @@ q = 0.01
 fake_users_count = m
 days = 0
 while (fake_users_count > 0) {
-  cat("before:", fake_users_count, "\n")
+  cat("Before:", fake_users_count, "\n")
   fake_users_count = fake_users_count - rbinom(1, n, p)
   i = fake_users_count
   while (i > 0) {
@@ -153,7 +153,7 @@ MC_prob = function(N, m, n, p, q, d) {
   return (s / N)
 }
 cat("MC_prob:",MC_prob(100, 100000, 500, 0.5, 0.01, 40), "\n");
-
+# Exercitiul IV. c)
 alpha = 1 - 0.99
 z = qnorm(alpha / 2)
 epsilon = 0.01
