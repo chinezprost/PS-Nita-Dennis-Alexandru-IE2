@@ -102,7 +102,10 @@ MC_fake = function(m, n, p, q) {
     cat("fa: ", fake_users_count, "\n");
     i = fake_users_count
     while (i > 0) {
+      if (runif(1, 0, 1) < q) {
         fake_users_count = fake_users_count - 1
+      }
+      fake_users_count = fake_users_count - 1
       i = i - 1;
     }
     days = days + 1
@@ -111,24 +114,6 @@ MC_fake = function(m, n, p, q) {
 }
 cat("MC_fake days: ", MC_fake(100000, 500, 0.5, 0.01), "\n")
 
-m = 100000
-n = 500
-p = 0.5
-q = 0.01
-fake_users_count = m
-days = 0
-while (fake_users_count > 0) {
-  cat("Before:", fake_users_count, "\n")
-  fake_users_count = fake_users_count - rbinom(1, n, p)
-  i = fake_users_count
-  while (i > 0) {
-      fake_users_count = fake_users_count - 1
-    i = i - 1;
-  }
-  days = days + 1
-  cat("After:", fake_users_count, "\n")
-}
-
 MC_fake_days = function(m, n, p, q, d) {
   fake_users_count = m
   days = 0
@@ -136,7 +121,10 @@ MC_fake_days = function(m, n, p, q, d) {
     fake_users_count = fake_users_count + rbinom(1, n, p)
     i = fake_users_count
     while (i > 0) {
+      if (runif(1, 0, 1) < q) {
         fake_users_count = fake_users_count - 1
+      }
+      fake_users_count = fake_users_count - 1
       i = i - 1;
     }
     days = days + 1
