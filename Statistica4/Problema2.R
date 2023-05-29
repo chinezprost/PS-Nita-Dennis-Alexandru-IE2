@@ -1,164 +1,73 @@
-# Exercitiul I)
-paraboloid_dish_volume = function(N, r) {
-  N_Counter = 0
-  for (iter in 1:N) {
-    x1 = runif(1, -sqrt(r), sqrt(r))
-    x2 = runif(1, -sqrt(r), sqrt(r))
-    x3 = runif(1, 0, r)
-    if (x1 * x1 + x2 * x2 <= x3) {
-      N_Counter = N_Counter + 1
+MC_probability_all_infected = function(N) {
+  count_all_infected = 0
+  for (idx in 1:N) {
+    num_infected = 1
+    num_days = 2
+    last_errs = c(18, 22, 28)
+    num_errs = 18
+    while (num_errs > 0) {
+      lambda = min(last_errs)
+      num_errs = rpois(1, lambda)
+      last_errs = c(num_errs, last_errs[1:2])
+      num_infected = num_infected + num_errs
+      num_days = num_days + 1
+    }
+    if (num_infected == 40) {
+      count_all_infected = count_all_infected + 1
     }
   }
-  return ((2 * sqrt(r)) ^ 2 * r * N_Counter / N)
+  return(count_all_infected / N)
 }
-radius = 2
-paraboloid_dish_volume(10000, radius)
-MC_volume = paraboloid_dish_volume(100000, radius)
-volume = pi * radius ^ 2 / 2
-absolute_err = abs(MC_volume - volume)
-relative_err = absolute_err / volume
-cat("Estimated volume is:", MC_volume, "\n")
-cat("Absolute error is:", absolute_err, "\n")
-cat("Relative error is:", relative_err, "\n")
 
-# Exercitiul II)
-quadrilateral_area = function(N) {
-  N_Counter = 0
-  for (iter in 1:N) {
-    x = runif(1, 0, 4)
-    y = runif(1, 0, 3)
-    if (3 * y <= x + 6 && y <= 12 - 3 * x) {
-      N_Counter = N_Counter + 1
+MC_probability_at_least_15_infected = function(N) {
+  count_at_least_15_infected = 0
+  for (idx in 1:N) {
+    num_infected = 1
+    num_days = 2
+    last_errs = c(18, 22, 28)
+    num_errs = 18
+    while (num_errs > 0) {
+      lambda = min(last_errs)
+      num_errs = rpois(1, lambda)
+      last_errs = c(num_errs, last_errs[1:2])
+      num_infected = num_infected + num_errs
+      num_days = num_days + 1
+    }
+    if (num_infected >= 15) {
+      count_at_least_15_infected = count_at_least_15_infected + 1
     }
   }
-  return (4 * 3 * N_Counter / N)
+  return(count_at_least_15_infected / N)
 }
-quadrilateral_area(100000)
-MC_area = quadrilateral_area(100000)
-area = 9
-absolute_err = abs(MC_area - area)
-relative_err = absolute_err / area
-cat("Estimated area is:", MC_area, "\n")
-cat("Absolute error is:", absolute_err, "\n")
-cat("Relative error is:", relative_err, "\n")
 
-# Exercitiul III.a)
-MC_integration = function(N, a, b) {
-  summation = 0
-  for (iter in 1:N) {
-    u = runif(1, a, b)
-    summation = summation + (u + 1) / sqrt(4 - u)
+MC_probability_at_least_15_infected_error = function(target_error, confidence) {
+  N = 10000
+  p_hat = MC_probability_at_least_15_infected(N)
+  error = 1
+  while (error > target_error) {
+    N = N * 2
+    p_hat_prev = p_hat
+    p_hat = MC_probability_at_least_15_infected(N)
+    error = qnorm(1 - (1 - confidence) / 2) * sqrt(p_hat_prev * (1 - p_hat_prev) / N)
   }
-  return ((b - a) * summation / N)
-}
-MC_integral = MC_integration(10000, -1, 1)
-integral = integrate(function(x) (x + 1) / sqrt(4 - x), -1, 1)$value
-absolute_err = abs(MC_integral - integral)
-relative_err = absolute_err / integral
-cat("Estimated integral is:", MC_integral, "\n")
-cat("Absolute error is:", absolute_err, "\n")
-cat("Relative error is:", relative_err, "\n")
-
-# Exercitiul III.b)
-MC_integration = function(N, a, b) {
-  summation = 0
-  for (iter in 1:N) {
-    u = runif(1, a, b)
-    summation = summation + 1 / (u ^ 2 + 4)
-  }
-  return ((b - a) * summation / N)
-}
-MC_integral = MC_integration(10000, -50, 0)
-integral = integrate(function(x) 1 / (x ^ 2 + 4), -Inf, 0)$value
-absolute_err = abs(MC_integral - integral)
-relative_err = absolute_err / integral
-cat("Estimated integral is:", MC_integral, "\n")
-cat("Absolute error is:", absolute_err, "\n")
-cat("Relative error is:", relative_err, "\n")
-
-#III.c
-MC_integration = function(N, a, b) {
-  summation = 0
-  for (iter in 1:N) {
-    u = runif(1, a, b)
-    summation = summation + u * exp(u)
-  }
-  return ((b - a) * summation / N)
-}
-MC_integral = MC_integration(10000, -50, 0)
-integral = integrate(function(x) x * exp(x), -Inf, 0)$value
-absolute_err = abs(MC_integral - integral)
-relative_err = absolute_err / integral
-cat("Estimated integral is:", MC_integral, "\n")
-cat("Absolute error is:", absolute_err, "\n")
-cat("Relative error is:", relative_err, "\n")
-
-#IV
-MC_fake = function(m, n, p, q) {
-  fake_users_count = m
-  days = 0
-  while (fake_users_count > 0) {
-    fake_users_count = fake_users_count + rbinom(1, n, p)
-    cat("fa: ", fake_users_count, "\n");
-    i = fake_users_count
-    while (i > 0) {
-        fake_users_count = fake_users_count - 1
-      i = i - 1;
-    }
-    days = days + 1
-  }
-  return (days)
-}
-cat("MC_fake days: ", MC_fake(100000, 500, 0.5, 0.01), "\n")
-
-m = 100000
-n = 500
-p = 0.5
-q = 0.01
-fake_users_count = m
-days = 0
-while (fake_users_count > 0) {
-  cat("before:", fake_users_count, "\n")
-  fake_users_count = fake_users_count - rbinom(1, n, p)
-  i = fake_users_count
-  while (i > 0) {
-      fake_users_count = fake_users_count - 1
-    i = i - 1;
-  }
-  days = days + 1
-  cat("After:", fake_users_count, "\n")
+  return(list(probability = p_hat, error = error))
 }
 
-MC_fake_days = function(m, n, p, q, d) {
-  fake_users_count = m
-  days = 0
-  while (fake_users_count > 0 && days < d) {
-    fake_users_count = fake_users_count + rbinom(1, n, p)
-    i = fake_users_count
-    while (i > 0) {
-        fake_users_count = fake_users_count - 1
-      i = i - 1;
-    }
-    days = days + 1
-  }
-  return (max(fake_users_count, 0))
-}
-cat("MC_fake_days:", MC_fake_days(100000, 500, 0.5, 0.01, 40), "\n");
+# Punctul a) Estimarea probabilității ca într-o anumită zi toate computerele să fie infectate
+prob_all_infected = MC_probability_all_infected(10000)
 
-MC_prob = function(N, m, n, p, q, d) {
-  s = 0;
-  for (iter in 1:N) {
-    s = s + MC_fake_days(m, n, p, q, d)
-  }
-  return (s / N)
-}
-cat("MC_prob:",MC_prob(100, 100000, 500, 0.5, 0.01, 40), "\n");
+cat("The probability that all computers are infected on a certain day:", prob_all_infected, "\n")
 
-alpha = 1 - 0.99
-z = qnorm(alpha / 2)
-epsilon = 0.01
-p = 0.5
-N_min = p * (1 - p) * (z / epsilon) ^ 2
-N_min
-#aici trebuie 10.000 de iteratii dar am impresia ca dureaza 4-5 ore
-MC_prob(N_min + 1, 10, 500, 0.5, 0.01, 40)
+# Punctul b) Estimarea probabilității ca într-o anumită zi toate computerele să fie infectate
+prob_at_least_15_infected = MC_probability_at_least_15_infected(10000)
+
+cat("The probability that at least 15 computers are infected on a certain day:", prob_at_least_15_infected, "\n")
+
+# Punctul c) Estimarea probabilității ca într-o anumită zi toate computerele să fie infectate
+target_error = 0.01
+confidence = 0.95
+
+result = MC_probability_at_least_15_infected_error(target_error, confidence)
+
+cat("The probability that at least 15 computers are infected on a certain day:", result$probability, "\n")
+cat("The error of the estimation:", result$error, "\n")
